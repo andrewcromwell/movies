@@ -90,6 +90,8 @@ CREATE TABLE PersonCredit
     MovieID INT FOREIGN KEY REFERENCES Movie(MovieID) NOT NULL
 )
 
+GO;
+
 CREATE OR ALTER PROCEDURE [dbo].[MergeMovies]
 AS
 BEGIN
@@ -110,6 +112,7 @@ BEGIN
 	RETURN 0
 END
 
+GO;
 
 CREATE   PROCEDURE [dbo].[MergeRegions]
 	@RegionName AS NVARCHAR(150),
@@ -129,8 +132,7 @@ BEGIN
 	RETURN 0
 END
 
-USE [moviedb]
-GO
+GO;
 
 /****** Object: SqlProcedure [dbo].[MergeMovies] Script Date: 6/13/2019 12:32:45 AM ******/
 SET ANSI_NULLS ON
@@ -167,6 +169,8 @@ BEGIN
 	RETURN 0
 END
 
+GO;
+
 CREATE   PROCEDURE [dbo].[MergeGenreMovies]
 	@GenreID AS INT,
 	@MovieID AS INT
@@ -185,6 +189,8 @@ BEGIN
 	RETURN 0
 END
 
+GO;
+
 CREATE   PROCEDURE [dbo].[MergeGenres]
 	@GenreID AS INT,
 	@GenreName AS NVARCHAR(100)
@@ -202,6 +208,8 @@ BEGIN
 
 	RETURN 0
 END
+
+GO;
 
 CREATE OR ALTER   PROCEDURE [dbo].[MergeMovieProducedInCountry]
 	@MovieID AS INT,
