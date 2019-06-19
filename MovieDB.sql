@@ -106,6 +106,14 @@ CREATE TABLE Review
 	ReviewURL NVARCHAR(300)
 )
 
+CREATE TABLE MonthlyCounts
+(
+	ID INT PRIMARY KEY IDENTITY(1,1),
+	YearMonth DATETIME,
+	Country NVARCHAR(150),
+	NumberOfMovies INT
+)
+
 GO
 
 CREATE OR ALTER PROCEDURE [dbo].[MergeMovies]
@@ -343,4 +351,37 @@ BEGIN
 	END
 
 	RETURN 0
+END
+
+GO
+
+CREATE PROCEDURE [dbo].[MonthlyTask]
+AS
+BEGIN
+
+	DECLARE @startDate DATETIME = GETDATE();
+	DECLARE
+		@currentYear INT = YEAR(@StartDate),
+		@currentMonth INT = MONTH(@startDate);
+
+	DECLARE @thisMonth DATETIME = DATETIMEFROMPARTS(@currentYear, @currentMonth, 1, 0, 0, 0, 0);
+	DECLARE @nextMonth DATETIME = DATEADD(MONTH, 1, @thisMonth);
+
+	INSERT INTO MonthlyCounts
+	(YearMonth, Country, NumberOfMovies)
+	SELECT
+		@thisMonth,
+		R.RegionCode,
+		COUNT(DISTINCT M.MovieID) AS NumberOfMovies
+	FROM
+		dbo.Movie M
+		INNER JOIN dbo.MovieRun
+		FOR SYSTEM_TIME BETWEEN @thisMonth AND @nextMonth MR
+			ON M.MovieID = MR.MovieID
+		INNER JOIN dbo.Region R
+			ON MR.RegionID = R.RegionID
+	GROUP BY R.RegionCode;
+
+RETURN 0
+
 END
