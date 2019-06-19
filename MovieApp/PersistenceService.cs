@@ -290,7 +290,7 @@ namespace MovieApp
                     "EXEC dbo.InsertIntoCredits @MovieID, @JobName, @PersonName";
 
                 command.Parameters.AddWithValue("@MovieID", movieID);
-                command.Parameters.AddWithValue("@JobName", "Directory");
+                command.Parameters.AddWithValue("@JobName", "Director");
                 command.Parameters.AddWithValue("@PersonName", personName);
 
                 command.ExecuteNonQuery();
