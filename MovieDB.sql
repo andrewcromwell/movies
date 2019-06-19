@@ -25,6 +25,7 @@ CREATE TABLE StagedMovie
 CREATE TABLE Region
 (
     RegionID INT PRIMARY KEY IDENTITY(1,1),
+	RegionName NVARCHAR(150),
     RegionCode NCHAR(2)
 )
 
