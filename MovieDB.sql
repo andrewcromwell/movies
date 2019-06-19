@@ -106,7 +106,7 @@ CREATE TABLE Review
 	ReviewURL NVARCHAR(300)
 )
 
-GO;
+GO
 
 CREATE OR ALTER PROCEDURE [dbo].[MergeMovies]
 AS
@@ -128,7 +128,7 @@ BEGIN
 	RETURN 0
 END
 
-GO;
+GO
 
 CREATE   PROCEDURE [dbo].[MergeRegions]
 	@RegionName AS NVARCHAR(150),
@@ -148,7 +148,7 @@ BEGIN
 	RETURN 0
 END
 
-GO;
+GO
 
 /****** Object: SqlProcedure [dbo].[MergeMovies] Script Date: 6/13/2019 12:32:45 AM ******/
 SET ANSI_NULLS ON
@@ -185,7 +185,7 @@ BEGIN
 	RETURN 0
 END
 
-GO;
+GO
 
 CREATE   PROCEDURE [dbo].[MergeGenreMovies]
 	@GenreID AS INT,
@@ -205,7 +205,7 @@ BEGIN
 	RETURN 0
 END
 
-GO;
+GO
 
 CREATE   PROCEDURE [dbo].[MergeGenres]
 	@GenreID AS INT,
@@ -225,7 +225,7 @@ BEGIN
 	RETURN 0
 END
 
-GO;
+GO
 
 CREATE OR ALTER   PROCEDURE [dbo].[MergeMovieProducedInCountry]
 	@MovieID AS INT,
@@ -252,7 +252,7 @@ BEGIN
 	RETURN 0
 END
 
-GO;
+GO
 
 CREATE     PROCEDURE [dbo].InsertIntoReviews
 	@AuthorName AS NCHAR(300),
