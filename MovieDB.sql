@@ -290,3 +290,57 @@ BEGIN
 
 	RETURN 0
 END
+
+GO
+
+CREATE     PROCEDURE [dbo].InsertIntoCredits
+	@MovieID AS INT,
+	@JobName as NVARCHAR(300),
+	@PersonName AS NCHAR(300)
+AS
+BEGIN
+	SET NOCOUNT ON; 
+
+	DECLARE @JobID INT;
+	DECLARE @PersonID INT;
+
+	SELECT 
+		@JobID = JobID
+	FROM dbo.Job 
+	WHERE JobName = @JobName
+
+	if @JobID IS NULL
+	BEGIN
+		INSERT INTO Job
+		(JobName)
+		VALUES
+		(@JobName);
+
+		SELECT @JobID = SCOPE_IDENTITY();
+	END
+
+	SELECT 
+		@PersonID = PersonID
+	FROM dbo.Person 
+	WHERE [Name] = @PersonName
+
+	if @PersonID IS NULL
+	BEGIN
+		INSERT INTO Person
+		([Name])
+		VALUES
+		(@PersonName);
+
+		SELECT @PersonID = SCOPE_IDENTITY();
+	END
+
+	IF (SELECT COUNT(1) FROM dbo.PersonCredit WHERE PersonID = @PersonID AND JobID = @JobID) = 0
+	BEGIN
+		INSERT INTO dbo.PersonCredit
+		(MovieID, PersonID, JobID)
+		VALUES
+		(@MovieID, @PersonID, @JobID);
+	END
+
+	RETURN 0
+END
