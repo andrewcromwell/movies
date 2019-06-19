@@ -253,11 +253,35 @@ namespace MovieApp
             public int total_results { get; set; }
             public int total_pages { get; set; }
 
-            public class Result
+            public class Result : IEquatable<Result>
             {
                 public string author { get; set; }
                 public string id { get; set; }
                 public string url { get; set; }
+
+                public bool Equals(Result other)
+                {
+                    if (other == null) return false;
+                    return (this.id == other.id);
+                }
+
+                public override bool Equals(object obj)
+                {
+                    Result other = obj as Result;
+                    if (other != null)
+                    {
+                        return Equals(other);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                public override int GetHashCode()
+                {
+                    return id.GetHashCode();
+                }
             }
 
             public Result[] results { get; set; }

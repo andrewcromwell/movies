@@ -90,6 +90,21 @@ CREATE TABLE PersonCredit
     MovieID INT FOREIGN KEY REFERENCES Movie(MovieID) NOT NULL
 )
 
+CREATE TABLE Author
+(
+	AuthorID INT PRIMARY KEY IDENTITY(1,1),
+	AuthorName NVARCHAR(300)
+)
+
+CREATE TABLE Review
+(
+	ReviewID INT PRIMARY KEY IDENTITY(1,1),
+	AuthorID INT FOREIGN KEY REFERENCES Author(AuthorID),
+	MovieID INT FOREIGN KEY REFERENCES Movie(MovieID),
+	jsonID NVARCHAR(24),
+	ReviewURL NVARCHAR(300)
+)
+
 GO;
 
 CREATE OR ALTER PROCEDURE [dbo].[MergeMovies]
@@ -231,6 +246,45 @@ BEGIN
 		(MovieID, RegionID)
 		VALUES
 		(@MovieID, @CountryID);
+	END
+
+	RETURN 0
+END
+
+GO;
+
+CREATE     PROCEDURE [dbo].InsertIntoReviews
+	@AuthorName AS NCHAR(300),
+	@MovieID AS INT,
+	@JsonID AS NVARCHAR(24),
+	@ReviewUrl AS NVARCHAR(300)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @AuthorID INT;
+
+	SELECT
+		@AuthorID = AuthorID
+	FROM dbo.Author
+	WHERE AuthorName = @AuthorName
+
+	if @AuthorID IS NULL
+	BEGIN
+		INSERT INTO Author
+		(AuthorName)
+		VALUES
+		(@AuthorName);
+
+		SELECT @AuthorID = SCOPE_IDENTITY();
+	END
+
+	IF (SELECT COUNT(1) FROM dbo.Review WHERE jsonID = @JsonID) = 0
+	BEGIN
+		INSERT INTO dbo.Review
+		(AuthorID, MovieID, jsonID, ReviewURL)
+		VALUES
+		(@AuthorID, @MovieID, @JsonID, @ReviewUrl);
 	END
 
 	RETURN 0

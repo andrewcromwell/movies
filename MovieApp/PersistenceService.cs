@@ -113,6 +113,18 @@ namespace MovieApp
             {
                 InsertIntoCredits(mc.Item1, mc.Item2);
             }
+
+            // STEP 8: insert reviews, where necessary
+            var AuthorReviews = (from keypair in fullResponse.reviews
+                                 from reviewSet in keypair.Value
+                                 from review in reviewSet.results
+                                 select new Tuple<string, int, RetrievalService.MovieReviews.Result> (review.author, keypair.Key, review))
+            .Distinct().ToArray();
+
+            foreach (Tuple<string, int, RetrievalService.MovieReviews.Result> t in AuthorReviews)
+            {
+                InsertIntoReviews(t.Item1, t.Item2, t.Item3);
+            }
             return true;
         }
 
@@ -280,6 +292,26 @@ namespace MovieApp
                 command.Parameters.AddWithValue("@MovieID", movieID);
                 command.Parameters.AddWithValue("@JobName", "Directory");
                 command.Parameters.AddWithValue("@PersonName", personName);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void InsertIntoReviews(string authorName,
+            int movieID,
+            RetrievalService.MovieReviews.Result review)
+        {
+            using (SqlConnection sqlconn = new SqlConnection(connStr))
+            {
+                sqlconn.Open();
+                SqlCommand command = sqlconn.CreateCommand();
+                command.CommandText =
+                    "EXEC dbo.InsertIntoReviews @AuthorName, @movieID, @jsonID, @url";
+
+                command.Parameters.AddWithValue("@AuthorName", authorName);
+                command.Parameters.AddWithValue("@movieID", movieID);
+                command.Parameters.AddWithValue("@jsonID", review.id);
+                command.Parameters.AddWithValue("@url", review.url);
 
                 command.ExecuteNonQuery();
             }
